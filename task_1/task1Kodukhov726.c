@@ -1,3 +1,10 @@
+/*
+ * tested commands:
+ * ls, pwd, top, vim, gcc, rm, ./a.out.
+ * cd doesn't work
+ * But also there are some mistakes in working
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,32 +15,43 @@
 int main()
 {
 
-	printf("to stop the program print:11\n");
-	char com[20];
-	int i=0;
-	for(i=0;i<20;i++){
-		com[i]='@';
-	}
-	printf("enter a command:");
-	scanf("%s", com);
-	/*scanf("%c", &com[0]);
-	while(com[i]!='\n'){
-		i++;
-		scanf("%c", &com[i]);
-	}*/
-
-	while(com[0]!='1' && com[1]!='1')
+	printf("to stop the procces print:11\n");
+	int i = 0;
+	int num=0, l = 0;
+	int maxlen = sysconf(_SC_ARG_MAX)+1;
+	char* com;
+	char** str_arg;
+	char delim[]=" ,-\n";
+	while(1)
 	{
-		int len = strlen(com);
-		//printf("lenth of command:%d\n", len);
-		char* cmd = malloc(sizeof(char)*len);
-		for(i=0;i<len;i++)
+		com=malloc(sizeof(char)*maxlen);
+	        printf("enter a command:");
+		i=0;
+	        scanf("%[^\n]%*c", com);
+		l = 0;
+		l = strlen(com);
+		if(*(com)=='1' && *(com+1)=='1')
+			break;
+		num = 0;
+		for(i=0;i<l;i++)
 		{
-			*(cmd+i)=com[i];
+			if(*(com+i)==' ' || *(com+i)==',' || *(com+i)=='-')
+			{
+				num++;
+			}
 		}
+		
+		i = 0;
+		str_arg = malloc(sizeof(char*)*(num+1));
+		for(char *p=strtok(com, delim); p!=NULL; p = strtok(NULL, delim))
+		{
+			*(str_arg+i)=p;
+			i++;			
+		}
+		
+
 
 		pid_t pid = fork();
-
 		if(pid<0)
 		{
 			printf("fork error\n");
@@ -47,15 +65,11 @@ int main()
 		}
 		else
 		{
-			//printf("doing\n");
-			execlp(cmd,"-l",NULL);
+			execvp(str_arg[0],str_arg);
 		}
 		
-
-		free(cmd);
-		printf("enter a command:");
-		scanf("%s", com);
+		free(str_arg);
+		free(com);
 	}
-
 	return 0;
 }
