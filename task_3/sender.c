@@ -1,17 +1,18 @@
-#include<sys/types.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<sys/stat.h>
-#include<fcntl.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <time.h>
-#include<sys/ipc.h>
-#include<unistd.h>
-#include<string.h>
-#include<errno.h>
+#include <sys/ipc.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
 #include <sys/msg.h>
 
 
 #define MSG_SIZE 1024
+#define BILLION 1000000000L;
 
 typedef struct msgbuf {
          long    mtype;
@@ -19,9 +20,17 @@ typedef struct msgbuf {
 } message_buf;
 
 int main(){
+	struct timespec start, stop;
+	double accum;
+	
+	if( clock_gettime( CLOCK_MONOTONIC, &start) == -1 ) {
+      		perror( "clock gettime" );
+      		return EXIT_FAILURE;
+	}
+
 	struct stat statbuf;
 	int fdin;
-	fdin = open("input.txt", O_RDONLY);	//open input file, file's size
+	fdin = open("supersmall.txt", O_RDONLY);	//open input file, file's size
   	if(fdin<0){
 		  printf("can't open input\n");
 		  exit(-1);
@@ -29,7 +38,7 @@ int main(){
 	fstat(fdin, &statbuf);
 	const int size = statbuf.st_size;
 	printf("size=[%d]\n",size);
-	
+
 	char* data= malloc(sizeof(char)*size);
 	read(fdin,data, size);
 	
@@ -67,6 +76,17 @@ int main(){
 		}*/
 	}
 	
+	if( clock_gettime( CLOCK_MONOTONIC, &stop) == -1 ) {
+      		perror( "clock gettime" );
+      		return EXIT_FAILURE;
+	}
+	
+	accum = ( stop.tv_sec - start.tv_sec )
+             + (double)( stop.tv_nsec - start.tv_nsec )
+	/                (double)BILLION;
+	accum = accum - accum - accum;
+	printf( "time=%lf seconds\n", accum );
+
 	free(data);	
 	return 0;
 }

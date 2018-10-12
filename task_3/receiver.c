@@ -3,8 +3,10 @@
 #include <sys/msg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define MSG_SIZE 1024
+#define BILLION 1000000000L;
 
 typedef struct msgbuf {
     	long    mtype;
@@ -16,9 +18,17 @@ int main(){
     	key_t key;
 	message_buf rbuf;
 	
+	struct timespec start, stop;
+	double accum;
+
 	int size=400;
 	char* rec_data=malloc(sizeof(char)*size);
-		
+	
+	if( clock_gettime( CLOCK_MONOTONIC, &start) == -1 ) {
+      		perror( "clock gettime" );
+	      	return EXIT_FAILURE;
+	}
+	
 	int buf_size = 4;
 	printf("ENTER SIZE OF BUF:\n");
 	scanf("%d", &buf_size);
@@ -43,9 +53,20 @@ int main(){
 		}
 	}	
 	
-	 for(k=0;k<size;k++){
+	if( clock_gettime( CLOCK_MONOTONIC, &stop) == -1 ) {
+      		perror( "clock gettime" );
+      		return EXIT_FAILURE;
+	}
+	
+	accum = ( stop.tv_sec - start.tv_sec )
+             + (double)( stop.tv_nsec - start.tv_nsec )
+/                (double)BILLION;
+	accum = accum - accum - accum;
+	printf( "time=%lf seconds\n", accum );
+
+	for(k=0;k<size;k++){
 		 printf("%c",rec_data[k]);
-	 }
+	}
 	free(rec_data);	
 	return 0;
 }
