@@ -21,7 +21,9 @@ int main(){
 	struct timespec start, stop;
 	double accum;
 
-	int size=400;
+	int size = 0;
+	printf("ENTER SIZE OF THE FILE:\n");
+	scanf("%d", &size);
 	char* rec_data=malloc(sizeof(char)*size);
 	
 	if( clock_gettime( CLOCK_MONOTONIC, &start) == -1 ) {
@@ -29,10 +31,11 @@ int main(){
 	      	return EXIT_FAILURE;
 	}
 	
-	int buf_size = 4;
+	int buf_size = 0;
 	printf("ENTER SIZE OF BUF:\n");
 	scanf("%d", &buf_size);
-	key = ftok("iput.txt",1);
+	//size = size +buf_size;
+	key = ftok("input.txt",1);
 	int msgflg = IPC_CREAT | 0666;
 	
 	 if ((msqid = msgget(key, msgflg)) < 0) {
@@ -43,13 +46,14 @@ int main(){
 	int i = 0;
 	int k = 0;
 	int al = size/buf_size;
-	for(k=0;k<(al-1);k++){
+	for(k=0;k<(al);k++){
 		if(msgrcv(msqid, &rbuf, buf_size, 1, 0)<0){
 			perror("NO MESSEGES");
 			exit(1);
 		}
         	for(i=0;i<buf_size;i++){
-			rec_data[buf_size*k+i]=rbuf.mtext[i];	
+			rec_data[buf_size*k+i]=rbuf.mtext[i];
+			//printf("%c",rec_data[buf_size*k+i]);	
 		}
 	}	
 	
@@ -64,9 +68,9 @@ int main(){
 	accum = accum - accum - accum;
 	printf( "time=%lf seconds\n", accum );
 
-	for(k=0;k<size;k++){
+	/*for(k=0;k<size;k++){
 		 printf("%c",rec_data[k]);
-	}
+	}*/
 	free(rec_data);	
 	return 0;
 }

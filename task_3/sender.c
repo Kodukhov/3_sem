@@ -30,7 +30,7 @@ int main(){
 
 	struct stat statbuf;
 	int fdin;
-	fdin = open("supersmall.txt", O_RDONLY);	//open input file, file's size
+	fdin = open("XL.txt", O_RDONLY);	//open input file, file's size
   	if(fdin<0){
 		  printf("can't open input\n");
 		  exit(-1);
@@ -48,7 +48,7 @@ int main(){
     	message_buf sbuf;
 	int buf_length;
 	
-	key = ftok("iput.txt",1);
+	key = ftok("input.txt",1);
 	
 	if ((msqid = msgget(key, msgflg )) < 0) {
         	perror("msgget");
