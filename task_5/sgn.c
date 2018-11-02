@@ -1,5 +1,6 @@
 //file, which was used, has 28 bytes.
 //File is just a pack of zeros and ones. It has not a negative impact on sending files by signals.
+//in.txt is a tested file.
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
