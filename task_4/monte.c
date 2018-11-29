@@ -22,7 +22,7 @@ float* res;
 int NUM = 0;
 int coun = 0;
 sem_t* sem;
-int max = 5000000;
+int max = 500000000;
 #define BILLION 1000000000L;
 
 void* thread_stuff(void *arg)
@@ -42,7 +42,8 @@ void* thread_stuff(void *arg)
 		printf("ERROR In TREAD_STUFF\n");
 		return NULL;
 	}
-	for(i=0;i<max/N;i++){
+	int b = max/N;
+	for(i=0;i<b;i++){
 		x = (float)rand()*2/RAND_MAX;
 		y = (float)rand()*4/RAND_MAX;
 		val = x*x;
@@ -107,7 +108,6 @@ int main(void){
 	accum = ( stop.tv_sec - start.tv_sec )
              + (double)( stop.tv_nsec - start.tv_nsec )
 	/                (double)BILLION;
-       		 accum = accum - accum - accum;
 	printf( "time=%lf seconds\n", accum );
 	free(res);
 	free(tid);
