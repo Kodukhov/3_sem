@@ -26,7 +26,7 @@ int main(){
 
 	struct stat statbuf;
 	int fdin;
-	fdin = open("input.txt", O_RDONLY);	//open input file, file's size
+	fdin = open("lar.txt", O_RDONLY);	//open input file, file's size
   	if(fdin<0){
 		  printf("can't open input\n");
 		  exit(-1);
