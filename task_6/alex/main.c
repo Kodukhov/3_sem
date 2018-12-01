@@ -1,3 +1,7 @@
+/*the directory, which is looked by daemon, is spelled out in main code.
+ * It is more easy to test the programm.
+ * Daemon sleeps one second after every iteration.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,21 +45,7 @@ void DIFF(const char *file, const char *name){
 	return;
 }
 
-/*int TYPE(const char *name){
-        char buf[256];
-        strcpy(buf, name);
-        int n = strlen(buf);
-        if(buf[n-1]=='t' && buf[n-2]=='x' && buf[n-3]=='t'&& buf[n-4]=='.'){
-                return 1;
-        }
-	if(buf[n-1]=='c' && buf[n-2]=='.'){
-		return 1;
-	}
-        return 0;
-}*/
-
 int TYPE(const char *f){
-	//char f[256]="/home/alexey/classwork/3_sem/task_6/alex/main.c";
         char arg[256]="file ";
         strcat(arg, f);
 
@@ -91,10 +81,8 @@ int TYPE(const char *f){
         close(fd);
 
         if(buf[size-2]=='t' && buf[size-3]=='x' && buf[size-4]=='e' && buf[size-5]=='t'){
-                //printf("YES\n");
                 return 1;
         }
-        //printf("NO\n");
         return 0;
 	
 }
@@ -119,7 +107,6 @@ void SearchDirectory(const char *name) {
 			} 
 			else{
 		       		if (S_ISREG(info.st_mode)) { 
-                   	//		 printf("reg_file: %s\n", Path);
 					 if(TYPE(Path)==1){
 					 	DIFF(Path,e->d_name);
 					 }
@@ -131,11 +118,16 @@ void SearchDirectory(const char *name) {
    	return;
 }
 
+void Daemon(const char *direct){
+	while(1){
+		SearchDirectory(direct);
+		sleep(1);
+	}
+}
 
 int main(){
 	char direct[256]="/home/alexey/classwork/3_sem/task_6";
-	SearchDirectory(direct);
-	/*pid_t parpid;
+	pid_t parpid;
 	if((parpid = fork()) < 0){
  	       perror("can't fork");
  	       exit(1);
@@ -145,6 +137,6 @@ int main(){
        		 exit(0);
    	}
 	setsid();
-	Daemon();*/
+	Daemon(direct);
 	return 0;
 }
